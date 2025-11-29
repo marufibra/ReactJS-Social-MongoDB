@@ -1,6 +1,5 @@
 *.env
 api/node_modules
-api/uploads
 client/node_modules
 mysql-crud
 youtube2022-blog-app
