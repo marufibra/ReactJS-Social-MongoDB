@@ -17,29 +17,36 @@ import {
 import { DarkModeContext } from './Context/darkModeContext'
 import { useContext } from 'react'
 import { AuthContext } from './Context/AuthContext'
+import NotFound from './pages/notfound/NotFound'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 
 const Layout = () => {
   const { darkMode } = useContext(DarkModeContext);
 
-
+  const queryClient = new QueryClient()
   return (
-    <div className={`theme-${darkMode ? "dark" : "light"}`}>
-      <NavBar />
-      <div style={{ display: 'flex' }}>
-        <LeftBar />
-        <div style={{ flex: 6 }}>
-          <Outlet />
+    <QueryClientProvider client={queryClient}>
+      <div className={`theme-${darkMode ? "dark" : "light"}`}>
+        <NavBar />
+        <div style={{ display: 'flex' }}>
+          <LeftBar />
+          <div style={{ flex: 6 }}>
+            <Outlet />
+          </div>
+          <RightBar />
         </div>
-        <RightBar />
       </div>
-    </div>
+    </QueryClientProvider>
   )
 }
 
 
 
-const ProtectedRoute = ({ children }) => {
+const AfterLogin = ({ children }) => {
   const { currentUser } = useContext(AuthContext);
   if (!currentUser) {
     return <Navigate to="/login" />
@@ -47,16 +54,20 @@ const ProtectedRoute = ({ children }) => {
   return children;
 }
 
+const BeforeLogin = ({ children }) => {
+  const { currentUser } = useContext(AuthContext);
+  if (currentUser) {
+    return <Navigate to="/" />
+  }
+  return children;
+}
 
 function App() {
-
-
-
   const router = createBrowserRouter([
 
     {
       path: "/",// this is the parent path and could be /dashboard and children path would follow like /dashbord/profile
-      element: <ProtectedRoute><Layout /></ProtectedRoute>,
+      element: <AfterLogin><Layout /></AfterLogin>,
       children: [
         {
           index: true, //child path should not start with /
@@ -70,12 +81,17 @@ function App() {
     },
     {
       path: "/login",
-      element: <Login />
+      element: <BeforeLogin><Login /></BeforeLogin>
     },
     {
       path: "/register",
-      element: <Register />
+      element: <BeforeLogin><Register /></BeforeLogin>
     },
+    {
+      path: "*",
+      element: <NotFound />
+    },
+
   ])
   return (
     <div>

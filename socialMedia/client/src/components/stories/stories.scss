@@ -10,11 +10,11 @@
 
         @include mobile {
             justify-content: space-around;
-            height: 50px;
+            height: 40px;
         }
 
         @include tablet {
-            height:150px;
+            height:40px;
             gap: 20px;
         }
 

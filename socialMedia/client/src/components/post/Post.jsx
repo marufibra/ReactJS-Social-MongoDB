@@ -6,12 +6,55 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from 'react-router-dom'
 import Comments from '../comments/Comments';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import moment from 'moment';
+import { makeRequest } from '../../axios';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AuthContext } from '../../Context/AuthContext';
+
 
 const Post = ({ post }) => {
     const [commentOpen, setCommentOpen] = useState(false);
-    //TEMPORARY
-    const liked = false;
+    const [menuOpen, setMenuOpen] = useState(false);
+    const { currentUser } = useContext(AuthContext);
+
+    const { isLoading, error, data = [] } = useQuery({
+        queryKey: ["likes", post?.id],
+        queryFn: () =>
+            makeRequest.get("/likes?postId=" + post.id).then(res => res.data),
+        enabled: !!post?.id, // don't run query until post.id exists
+    });
+
+    const queryClient = useQueryClient()
+    const mutation = useMutation({
+        mutationFn: (liked) => {
+            if (liked) return makeRequest.delete("/likes?postId=" + post.id);
+            return makeRequest.post("/likes", { postId: post.id });
+        },
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries({ queryKey: ['likes', post.id] }) //Invalidate only the current post’s likes
+        },
+    })
+
+    const handleLike = () => {
+        mutation.mutate(data.includes(currentUser.id)) //returns true or false
+    }
+
+
+    const deleteMutation = useMutation({
+        mutationFn: (postId) => {
+
+            return makeRequest.delete("/posts/" + postId);
+        },
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries({ queryKey: ['posts'] })
+        },
+    })
+    const handleDeletePost = () => {
+        deleteMutation.mutate(post.id)
+    }
 
     return (
         <div className='post'>
@@ -23,10 +66,13 @@ const Post = ({ post }) => {
                             <Link to={`/profile/${post.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <span className='name'>{post.name}</span>
                             </Link>
-                            <span className='date'>1 min ago</span>
+                            <span className='date'>{moment(post.createdAt).fromNow()}</span>
                         </div>
                     </div>
-                    <MoreHorizIcon />
+                    <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
+                    {menuOpen && post.userId === currentUser.id && (
+                        <button onClick={handleDeletePost}>Delete</button>
+                    )}
                 </div>
                 <div className="content">
                     <p>{post.desc}</p>
@@ -34,21 +80,29 @@ const Post = ({ post }) => {
                 </div>
                 <div className="info">
                     <div className="item">
-                        {liked ?  <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-                        12 likes
+                        {error ?
+                            "Something went wrong!"
+                            : isLoading
+                                ? "Loading..."
+                                : data.includes(currentUser.id) ? <FavoriteOutlinedIcon style={{ color: "red" }} onClick={handleLike} /> : <FavoriteBorderOutlinedIcon onClick={handleLike} />}
+                        {error ?
+                            "Something went wrong!"
+                            : isLoading
+                                ? "Loading..."
+                                : data.length} likes
                     </div>
 
-                    <div className="item" onClick={()=>setCommentOpen(!commentOpen)}>
-                        <TextsmsOutlinedIcon/>
+                    <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
+                        <TextsmsOutlinedIcon />
                         12 Comments
                     </div>
 
                     <div className="item">
-                        <ShareOutlinedIcon/>
+                        <ShareOutlinedIcon />
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments/>}
+                {commentOpen && <Comments postId={post.id} />}
             </div>
         </div>
     )

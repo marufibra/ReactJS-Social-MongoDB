@@ -1,8 +1,9 @@
 *.env
-api/node_modules
-client/node_modules
+socialMedia/api/node_modules
+socialMedia/client/node_modules
 mysql-crud
 youtube2022-blog-app
 dist
 blog
+youtube2022-social-ui
 socialMedia/node_modules
