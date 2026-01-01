@@ -140,7 +140,7 @@ const Posts = ({ userId }) => {
 
   const SkeletonPost = () => (
                     //  Array(5).fill().map((_, i) => (
-                        <div  style={{ marginBottom: "16px" }}>
+                        <div  style={{ marginBottom: "30px" }}>
                             {/* Image skeleton */}
                             <Skeleton height={200} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
 
@@ -149,7 +149,7 @@ const Posts = ({ userId }) => {
                                 style={{
                                     display: "flex",
                                     justifyContent:"space-between",
-                                    marginTop: "12px",
+                                    marginTop: "8px",
                                 }}
                             >
                                 <div style={{ flex: "0 0 30%" }}>
