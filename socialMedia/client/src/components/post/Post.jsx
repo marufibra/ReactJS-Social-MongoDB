@@ -12,6 +12,8 @@ import { makeRequest } from '../../axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AuthContext } from '../../Context/AuthContext';
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Post = ({ post }) => {
     const [commentOpen, setCommentOpen] = useState(false);
@@ -83,12 +85,12 @@ const Post = ({ post }) => {
                         {error ?
                             "Something went wrong!"
                             : isLoading
-                                ? "Loading..."
+                                ? <Skeleton height={200} />
                                 : data.includes(currentUser.id) ? <FavoriteOutlinedIcon style={{ color: "red" }} onClick={handleLike} /> : <FavoriteBorderOutlinedIcon onClick={handleLike} />}
                         {error ?
                             "Something went wrong!"
                             : isLoading
-                                ? "Loading..."
+                                ? <Skeleton height={200} />
                                 : data.length} likes
                     </div>
 
