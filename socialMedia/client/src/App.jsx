@@ -18,11 +18,14 @@ import { DarkModeContext } from './Context/darkModeContext'
 import { useContext } from 'react'
 import { AuthContext } from './Context/AuthContext'
 import NotFound from './pages/notfound/NotFound'
+
 import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import SkeletonHome from './components/skeletonHome/SkeletonHome'
 
 const Layout = () => {
   const { darkMode } = useContext(DarkModeContext);
@@ -47,20 +50,38 @@ const Layout = () => {
 
 
 const AfterLogin = ({ children }) => {
-  const { currentUser } = useContext(AuthContext);
-  if (!currentUser) {
-    return <Navigate to="/login" />
+  const { status } = useContext(AuthContext);
+
+  if (status === "loading") {
+    return <SkeletonHome />; // ⏳ initial load
   }
+
+  if (status === "offline") {
+    return <SkeletonHome />; // 🚫 backend down
+  }
+
+  if (status === "unauthenticated") {
+    return <Navigate to="/login" />;
+  }
+
   return children;
-}
+};
+
 
 const BeforeLogin = ({ children }) => {
-  const { currentUser } = useContext(AuthContext);
-  if (currentUser) {
-    return <Navigate to="/" />
+  const { status } = useContext(AuthContext);
+
+  if (status === "authenticated") {
+    return <Navigate to="/" />;
   }
+
   return children;
-}
+};
+
+
+
+
+
 
 function App() {
   const router = createBrowserRouter([

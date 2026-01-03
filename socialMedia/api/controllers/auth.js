@@ -5,6 +5,24 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+
+// verify me
+export const getMe = (req, res) => {
+  const token = req.cookies.accessToken;
+  if (!token) return res.status(401).json(null);
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json(null);
+
+    const q =
+      "SELECT id, username, email, name, profilePic FROM users WHERE id=?";
+    db.query(q, [user.id], (err, data) => {
+      if (err) return res.status(500).json(null);
+      res.status(200).json(data[0]);
+    });
+  });
+};
+
 export const register = (req, res) => {
 
     //CHECK USER IF EXISTS
@@ -53,6 +71,12 @@ export const login = (req, res) => {
         }
         if (data.length === 0) return res.status(404).json("User not found");
         //data.length === 0 nothing was found
+
+        if (!data[0].password) {
+            return res
+                .status(400)
+                .json("This account uses Google login");
+        }
 
         const checkPassword = bcrypt.compareSync(req.body.password, data[0].password)
         if (!checkPassword) return res.status(400).json("Wrong password or username!")

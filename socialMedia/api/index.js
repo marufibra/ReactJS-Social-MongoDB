@@ -7,6 +7,8 @@ import postRoutes from './routes/posts.js';
 import commentRoutes from './routes/comments.js';
 import likeRoutes from './routes/likes.js';
 import relationshipRoutes from './routes/relationships.js';
+import passport from "passport";
+import "./passport.js";
 
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
@@ -24,6 +26,7 @@ app.use(cors({
 
 
 
+
 app.post('/api/upload', (req, res, next) => {
   upload.single('file')(req, res, (err) => {
     if (err) {
@@ -36,6 +39,7 @@ app.post('/api/upload', (req, res, next) => {
   });
 });
 
+app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes)
 app.use("/api/posts", postRoutes)

@@ -139,34 +139,34 @@ const Posts = ({ userId }) => {
   }, [fetchNextPage, hasNextPage]);
 
   const SkeletonPost = () => (
-                    //  Array(5).fill().map((_, i) => (
-                        <div  style={{ marginBottom: "30px" }}>
-                            {/* Image skeleton */}
-                            <Skeleton height={200} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
+    //  Array(5).fill().map((_, i) => (
+    <div style={{ marginBottom: "30px" }}>
+      {/* Image skeleton */}
+      <Skeleton height={200} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
 
-                            {/* Text skeletons */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent:"space-between",
-                                    marginTop: "8px",
-                                }}
-                            >
-                                <div style={{ flex: "0 0 30%" }}>
-                                    <Skeleton height={20} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
-                                </div>
+      {/* Text skeletons */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "8px",
+        }}
+      >
+        <div style={{ flex: "0 0 30%" }}>
+          <Skeleton height={20} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
+        </div>
 
-                                <div style={{ flex: "0 0 20%" }}>
-                                    <Skeleton height={20} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
-                                </div>
+        <div style={{ flex: "0 0 20%" }}>
+          <Skeleton height={20} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
+        </div>
 
-                                <div style={{ flex: "0 0 30%" }}>
-                                    <Skeleton height={20} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
-                                </div>
+        <div style={{ flex: "0 0 30%" }}>
+          <Skeleton height={20} baseColor="#e6e1dc" highlightColor="#f4f1ee" />
+        </div>
 
-                            </div>
-                        </div>
-                    // ))
+      </div>
+    </div>
+    // ))
   );
 
   return (

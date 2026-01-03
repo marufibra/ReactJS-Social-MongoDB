@@ -19,9 +19,6 @@ function Login() {
 
   const navigate = useNavigate();
 
-
-
-
   const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
@@ -62,9 +59,15 @@ function Login() {
             {error && <p style={{ color: "red" }}>{error}</p>}
             <button onClick={handleLogin}>Login</button>
 
+            <span>
+
+              <a href="http://localhost:8800/api/auth/google">
+                Continue with Google
+              </a>
+            </span>
             <span>Don't you have an account?
 
-              <span style={{paddingLeft:"10px"}}>
+              <span style={{ paddingLeft: "10px" }}>
                 <Link to="/register">
                   Register
                 </Link>
