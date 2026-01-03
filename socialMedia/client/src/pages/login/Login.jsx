@@ -61,7 +61,8 @@ function Login() {
 
             <span>
 
-              <a href="http://localhost:8800/api/auth/google">
+              <a href={`${import.meta.env.VITE_API_URL}/auth/google`}>
+             {/* "http://localhost:8800/api/auth/google" */}
                 Continue with Google
               </a>
             </span>

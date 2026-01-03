@@ -2,6 +2,8 @@ import express from 'express'
 import { login, register, logout, getMe } from '../controllers/auth.js';
 import passport from "passport";
 import jwt from "jsonwebtoken"
+import dotenv from 'dotenv';
+dotenv.config();
 
 const router = express.Router();
 
@@ -34,7 +36,7 @@ router.get(
             sameSite: isProduction ? "none" : "lax",
         });
 
-        res.redirect("http://localhost:5173/");
+        res.redirect(process.env.CLIENT_URL);
     }
 );
 
