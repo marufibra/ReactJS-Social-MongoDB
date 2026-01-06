@@ -1,7 +1,29 @@
+
 import './rightBar.scss'
 
+
+import { useNavigate } from "react-router-dom";
+
+
 function RightBar() {
-  const friendsImg ="https://cdn.pixabay.com/photo/2022/12/07/02/58/ai-generated-7640108_1280.jpg"
+  const navigate = useNavigate();
+  const friendsImg = "https://cdn.pixabay.com/photo/2022/12/07/02/58/ai-generated-7640108_1280.jpg"
+
+  // const [onlineFriends, setOnlineFriends] = useState([])
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       // const url = `${import.meta.env.VITE_API_URL}/posts${cat ? `?cat=${cat}` : ""}`;
+  //       const res = await axios.get(`${import.meta.env.VITE_API_URL}/onlinefriends`);
+  //       setOnlineFriends(res.data);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
   return (
     <div className='rightBar'>
       <div className="container">
@@ -28,9 +50,9 @@ function RightBar() {
               <button>dismiss</button>
             </div>
           </div>
-
         </div>
 
+        {/* LAST ACTIVITY */}
         <div className="item">
           <span>Latest Activities</span>
           <div className="user">
@@ -74,9 +96,13 @@ function RightBar() {
           </div>
         </div>
 
+        {/* ONLINE FRIENDS */}
         <div className="item">
           <span>Online Friends</span>
-          <div className="user">
+          <div
+            className="user chatUser"
+            onClick={() => navigate(`/chat/2`)}
+          >
             <div className="userInfo">
               <img src={friendsImg} alt="" />
               <div className='online' />
@@ -84,7 +110,10 @@ function RightBar() {
             </div>
           </div>
 
-          <div className="user">
+          <div
+            className="user chatUser"
+            onClick={() => navigate(`/chat/3`)}
+          >
             <div className="userInfo">
               <img src={friendsImg} alt="" />
               <div className='online' />
@@ -92,7 +121,10 @@ function RightBar() {
             </div>
           </div>
 
-          <div className="user">
+          <div
+            className="user chatUser"
+            onClick={() => navigate(`/chat/6`)}
+          >
             <div className="userInfo">
               <img src={friendsImg} alt="" />
               <div className='online' />
@@ -100,7 +132,10 @@ function RightBar() {
             </div>
           </div>
 
-          <div className="user">
+          <div
+            className="user chatUser"
+            onClick={() => navigate(`/chat/3`)}
+          >
             <div className="userInfo">
               <img src={friendsImg} alt="" />
               <div className='online' />

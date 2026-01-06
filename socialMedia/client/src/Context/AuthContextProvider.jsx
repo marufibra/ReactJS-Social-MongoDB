@@ -1,45 +1,8 @@
-// import { useEffect, useState } from "react";
-// import axios from 'axios'
-// import { AuthContext } from "./AuthContext";
-
-
-// export const AuthContextProvider = ({ children }) => {
-//     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
-//     // without JSON.parse() we would receive a string i.e 'false'
-//     // JSON.parse("true")   // --> true  (boolean)
-//     // JSON.parse("false")  // --> false (boolean)
-//     // JSON.parse("123")    // --> 123   (number)
-
-//     const login = async (inputs) => {
-//         const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`,
-//             inputs,
-//             { withCredentials: true }
-//         );
-//         setCurrentUser(res.data)
-//     };
-
-//     const logout = async () => {
-//         await axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`,
-//             {},
-//             { withCredentials: true }
-//         );
-//         setCurrentUser(null);
-//     };
-
-
-//     useEffect(() => {
-//         localStorage.setItem("user", JSON.stringify(currentUser))
-//     }, [currentUser]);
-
-//     return (
-//         <AuthContext.Provider value={{ currentUser, login, logout }}>{children}</AuthContext.Provider>
-//     )
-// }
-
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "./AuthContext";
+import { socket } from "../socket";
+// import { socket } from "../socket";
 
 axios.defaults.withCredentials = true;
 
@@ -49,7 +12,7 @@ export const AuthContextProvider = ({ children }) => {
   // loading | authenticated | unauthenticated | offline
   const [status, setStatus] = useState("loading");
 
-  // 🔑 Check auth status on app load
+  /* -------------------- AUTH CHECK -------------------- */
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/auth/me`, {
@@ -61,17 +24,31 @@ export const AuthContextProvider = ({ children }) => {
       })
       .catch((err) => {
         if (!err.response) {
-          // Backend is down / unreachable
           setStatus("offline");
         } else {
-          // Not logged in
           setCurrentUser(null);
           setStatus("unauthenticated");
         }
       });
   }, []);
 
-  // ✅ Normal login (username + password)
+  /* -------------------- SOCKET JOIN -------------------- */
+  useEffect(() => {
+    if (status === "authenticated" && currentUser) {
+      socket.connect();
+      socket.emit("join", currentUser.id);
+    }
+
+    if (status !== "authenticated") {
+      socket.disconnect();
+    }
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [status, currentUser]);
+
+  /* -------------------- LOGIN -------------------- */
   const login = async (inputs) => {
     try {
       const res = await axios.post(
@@ -82,15 +59,16 @@ export const AuthContextProvider = ({ children }) => {
       setStatus("authenticated");
     } catch (err) {
       setStatus("unauthenticated");
-      throw err; // let UI show error
+      throw err;
     }
   };
 
-  // ✅ Logout (normal + Google)
+  /* -------------------- LOGOUT -------------------- */
   const logout = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`);
     } finally {
+      socket.disconnect(); // 🔴 ensure clean disconnect
       setCurrentUser(null);
       setStatus("unauthenticated");
     }
