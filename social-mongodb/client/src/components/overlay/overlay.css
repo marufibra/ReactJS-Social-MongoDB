@@ -1,0 +1,10 @@
+.transparent-overlay {
+    position: fixed;
+    inset: 0;
+
+    background-color: black;
+    opacity: 0.9;
+    z-index: 10;
+    pointer-events: none;
+    /* content remains clickable */
+}

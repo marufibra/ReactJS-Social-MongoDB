@@ -1,0 +1,40 @@
+.conversation{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.unreadBadge{
+    background-color:red;
+    width:18px;
+    height:18px;
+    color:white;
+    position:absolute;
+    top:-5px;
+    right:15px;
+    border-radius:50%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+    border:2px solid white
+}
+
+.conversation:hover{
+    background-color: rgb(245, 243,243);
+}
+
+.conversationImg{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.conversationName{
+    font-weight: 500;
+}
+
